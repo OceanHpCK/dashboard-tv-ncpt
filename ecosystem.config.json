@@ -1,0 +1,14 @@
+{
+  "apps": [
+    {
+      "name": "dashboard-tv-ncpt",
+      "script": "server.ts",
+      "interpreter": "node",
+      "interpreter_args": "--experimental-strip-types",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": 3000
+      }
+    }
+  ]
+}
