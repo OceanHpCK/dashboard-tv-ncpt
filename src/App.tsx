@@ -417,7 +417,7 @@ function DashboardContent({ data, onRefresh, refreshing }: {
                   <BarChart data={tuVanChartData.slice(0, topNTuVan)} layout="vertical" margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
                     <XAxis type="number" />
-                    <YAxis dataKey="name" type="category" width={160} tick={<CustomYAxisTick />} />
+                    <YAxis dataKey="name" type="category" width={160} tick={<CustomYAxisTick />} interval={0} />
                     <Tooltip 
                       contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                       cursor={{ fill: '#f1f5f9' }}
@@ -482,7 +482,7 @@ function DashboardContent({ data, onRefresh, refreshing }: {
                   <BarChart data={banVePersonChartData.slice(0, topNBanVe)} layout="vertical" margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
                     <XAxis type="number" />
-                    <YAxis dataKey="name" type="category" width={160} tick={<CustomYAxisTick />} />
+                    <YAxis dataKey="name" type="category" width={160} tick={<CustomYAxisTick />} interval={0} />
                     <Tooltip 
                       contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                       cursor={{ fill: '#f1f5f9' }}
