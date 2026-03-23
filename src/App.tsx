@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { LayoutDashboard, LogIn, LogOut, AlertCircle, Loader2, FileSpreadsheet, Filter } from 'lucide-react';
+import Papa from 'papaparse';
 
 // Utility to find column index by name (case-insensitive, partial match)
 const findColumnIndex = (headers: string[], possibleNames: string[]) => {
@@ -53,12 +54,35 @@ export default function App() {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/sheets/data');
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => null);
-        throw new Error(errorData?.error || "Failed to fetch data from Google Sheets.");
+      const spreadsheetId = "1W6r0LnPuQafblFW_7lQ0yLDxjiMuCIrCWkzM3Sg6RkA";
+      
+      const fetchSheet = async (sheetName: string) => {
+        const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch sheet ${sheetName}: ${response.statusText}`);
+        }
+        const csvText = await response.text();
+        const parsed = Papa.parse(csvText, { header: false });
+        return parsed.data;
+      };
+
+      // Try local API first, fallback to direct fetch if it fails or if on static host
+      let json;
+      try {
+        const res = await fetch('/api/sheets/data');
+        if (res.ok) {
+          json = await res.json();
+        } else {
+          throw new Error("API not available");
+        }
+      } catch (e) {
+        console.log("Falling back to direct Google Sheets fetch...");
+        const dataTvkt = await fetchSheet("Data_TVKT");
+        const banVeTvkt = await fetchSheet("Ban_ve_TVKT");
+        json = { dataTvkt, banVeTvkt };
       }
-      const json = await res.json();
+
       setData(json);
     } catch (err: any) {
       setError(err.message);
@@ -83,7 +107,7 @@ export default function App() {
             <div className="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center">
               <LayoutDashboard className="w-5 h-5" />
             </div>
-            <h1 className="text-xl font-bold text-slate-900">Dashboard System</h1>
+            <h1 className="text-xl font-bold text-slate-900">dashboard System</h1>
           </div>
           <button 
             onClick={fetchData}
